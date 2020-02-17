@@ -1,1 +1,124 @@
+Sub StockMarketData()
 
+  For Each ws In ActiveWorkbook.Worksheets
+    ws.Activate
+  
+
+  
+ 
+'Last Row Defined
+LastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+
+
+
+'Define Variables
+Dim ticker As String
+Dim open_price As Double
+Dim close_price As Double
+Dim volume As Double
+Dim yearly_change As Double
+Dim percent_change As Double
+Dim Row As Double
+Row = 2
+Dim Column As Integer
+Column = 1
+
+'Headings for final results
+Cells(1, "I").Value = "Ticker"
+Cells(1, "J").Value = "Yearly Change"
+Cells(1, "K").Value = "Percent Change"
+Cells(1, "L").Value = "Total Volume"
+
+
+
+'Open price
+open_price = Cells(2, Column + 2).Value
+
+
+
+For i = 2 To LastRow
+
+ 
+
+'Check to see if we are in the same ticker sign
+If Cells(i + 1, Column).Value <> Cells(i, Column).Value Then
+
+ticker = Cells(i, Column).Value
+
+Cells(Row, Column + 8).Value = ticker
+
+
+'Close price
+close_price = Cells(i, Column + 5).Value
+
+'Yearly Change
+yearly_change = close_price - open_price
+
+  Cells(Row, Column + 9).Value = yearly_change
+  
+'Percent change
+If (open_price = 0 And close_price = 0) Then
+   percent_change = 0
+   
+ElseIf (open_price = 0 And close_price <> 0) Then
+    percent_change = 1
+    
+Else
+  percent_change = yearly_change / open_price
+  
+  Cells(Row, Column + 10).Value = percent_change
+  
+  Cells(Row, Column + 10).NumberFormat = "0.00%"
+  
+  End If
+  
+'Volume
+volume = volume + Cells(i, Column + 7).Value
+Cells(Row, Column + 11).Value = volume
+
+'Add to table row
+Row = Row + 1
+
+'Reset open price
+open_price = Cells(i + 1, Column + 2)
+
+'Reset Volume
+volume = 0
+
+Else
+
+volume = volume + Cells(i, Column + 6).Value
+
+  End If
+
+Next i
+
+
+  
+  
+  
+
+  
+  'Cell Colors
+    For j = 2 To LastRow
+     If Cells(j, 10).Value > 0 Or Cells(j, 10).Value = 0 Then
+      Cells(j, 10).Interior.ColorIndex = 10
+    ElseIf Cells(j, 10).Value < 0 Then
+     Cells(j, 10).Interior.ColorIndex = 3
+ 
+
+ 
+End If
+
+ 
+
+  Next j
+
+   
+  
+  
+
+
+Next ws
+
+End Sub
